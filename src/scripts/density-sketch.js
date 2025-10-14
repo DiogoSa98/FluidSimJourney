@@ -190,7 +190,6 @@ function createDiffusionSim(containerId, options = {}) {
                 4 * x0[i][j]);
         }
       }
-      // enforce boundary conditions so borders remain defined
       set_bnd(N, x);
     }
 
