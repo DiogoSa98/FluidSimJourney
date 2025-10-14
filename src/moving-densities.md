@@ -1,26 +1,31 @@
 # Moving Densities
 
-The paper starts by describing the solver for density field assuming a fixed velocity field.
-Let's break down the terms of the density equation and solve them one by one
+Stam starts by focusing on the simpler of the two equations — the one describing how a **density field** moves through a fixed **velocity field** (i.e., assuming the velocity doesn’t change with time).
 
-p/dt = -(u\*lambda)ro + k laplacian p + s
-density follows velociy function
-density may diffuse at a certain rate
-density increases due to sources
+The density equation:
 
-## diffusion
+$$
+\frac{\partial \rho}{\partial t} = -(\mathbf{u} \cdot \nabla)\rho + k \nabla^2 \rho + S
+$$
 
-- diffusion equation
+Each term on the right-hand side contributes differently to how the density evolves:
 
--- laplacian operator
--- descritization of the laplacian
---- Numerical Differentiation
----- taylor series
---- numerical integration of ODEs
+- The first term means the density follows the velocity field — it gets _advected_.
+- The second term represents _diffusion_, how density spreads out over time.
+- The third term adds _sources_, meaning new density gets introduced into the system.
 
-### following velocity field
+![Density Solver](images/stam-density-solver.png)
 
-### adding sources
+Stam’s solver tackles these three effects every time step, but in reverse order:  
+first adding sources, then diffusing, and finally advecting the density through the velocity field.
+
+The source term is the simplest to handle — for each cell, the new density is increased by the amount added by sources during the time step $dt$; In my implementation I simply set the density at the clicked grid cell to 1.
+
+That’s the first building block — adding density into the world. The interesting behavior comes next, when the density starts to move and spread.
+
+- [Diffusion Bad](diffusion-bad.md)
+- [Diffusion Good]
+- [Following Velocity]
 
 # Navier-Stokes in 2D
 
@@ -44,20 +49,6 @@ vec2 backtrace(vec2 pos, vec2 velocity, float dt) {
 
 <div id="plot"></div>     <script src="https://cdn.plot.ly/plotly-3.1.1.min.js" charset="utf-8"></script> <script> const x = Array.from({length:100},(_,i)=>i/10); const y = x.map(v=>Math.sin(v)); Plotly.newPlot('plot',[{x,y,type:'scatter'}]); </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-<!-- <script src="scripts/density-sim.js"></script>
-<div id="sketch-container" class="sketch-container">
-<div id="sketch-canvas-container" class="sketch-canvas-container">
-<div id="sketch-buttons-container" class="sketch-buttons-container"></div>
-</div>
-<div id="sketch-parameters-container" class="sketch-parameters-container"></div>
-</div> -->
-<div id="diffusion-bad" class="sketch-container"></div>
-<script src="scripts/density-sketch.js"></script>
-<script>
-  createDiffusionSim("diffusion-bad", { useDiffuseBad: true });
-</script>
-
 Pretty cool right! But if you tried bumping up the diffuse coefficient you'll notice the simulation freaks the fuck out and some weird patterns start to appear.
 
 Wtf is going on? I don't really know myself but from the paper ". For large diffusion rates a the density values start to oscillate, become negative
@@ -72,5 +63,3 @@ in time yield the densities we started with. In code:"
 </script>
 
 ## TODO go look at the background in numerical integration of ODEs and explain how/why the forward euler integration method is unstable and the backwards isn't!!!
-
-## TODO figure out why the stable diffuse diffuses much much quicker than the previous method
