@@ -33,8 +33,6 @@ void diffuse_bad ( int N, int b, float *x, float *x0, float diff, float dt ) {
 
 The routine `set_bnd()` handles the boundary cells, which will be discussed later.
 
----
-
 ## Understanding the Diffusion Equation
 
 If we only account for **density diffusion**, we obtain the following partial differential equation:
@@ -68,8 +66,6 @@ I don’t know how it was originally derived, but intuitively, it says: _the rat
 
 (There’s a great 3Blue1Brown video that visually explains this beautifully: [Diffusion equation](https://www.youtube.com/watch?v=ly4S0oi3Yz8&t=536s))
 
----
-
 ## Solving the Diffusion Equation
 
 What we care about is: given some density $p$ at time step $t$, how do we find the density at $t + \Delta t$?
@@ -100,9 +96,7 @@ $$
 \frac{dp}{dt} = k \nabla^2 p
 $$
 
-So we just need a way to compute $\nabla^2 p$ — the Laplacian of the density field.
-
----
+Since the Laplacian of the density field, $\nabla^2 p$, is only dependent on the density itself, we just need a way to compute it.
 
 ## Discretizing the Laplacian
 
@@ -133,14 +127,12 @@ $$
 Notice how this matches exactly the expression Stam uses for the diffusion process.  
 It doesn’t come out of thin air — it’s the result of combining several deep mathematical concepts into something surprisingly simple and elegant.
 
----
-
 ## Putting It All Together
 
 Our update rule for a single cell becomes:
 
 $$
-p(t + \Delta t) = p(t) + \Delta t \, k \, \frac{p(x+h, y) + p(x-h, y) + p(x, y+h) + p(x, y-h) - 4p(x, y)}{h^2}
+p(t + \Delta t) = p(t) + \Delta t k \frac{p(x+h, y) + p(x-h, y) + p(x, y+h) + p(x, y-h) - 4p(x, y)}{h^2}
 $$
 
 This looks almost identical to Stam’s pseudo-code.  
@@ -149,12 +141,10 @@ The only detail to note is that $h$ is the cell size — since each cell has con
 Stam combines $\Delta t$, $k$, and $1/h^2$ into a single constant (the variable `a` in his code). Because this value doesn’t change during each iteration (or frame), it can be computed once and reused:
 
 $$
-a = \Delta t \, k \, N^2
+a = \Delta t * k * N^2
 $$
 
 Here, we assume the grid size is 1, so $h = 1/N$ and $1/h^2 = N^2$.
-
----
 
 That’s it — that’s all you need to understand the **diffusion step** of the simulation. Rejoice!
 
