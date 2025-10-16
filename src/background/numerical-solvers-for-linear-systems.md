@@ -5,13 +5,13 @@ _Reference: [GeeksForGeeks – Jacobi Method](https://www.geeksforgeeks.org/engi
 Given a system of linear equations, i.e.:
 
 $$
-\begin{cases} a_{11}x_1 + a_{12}x_2 = b_1 \\ a_{21}x_1 + a_{22}x_2 = b_2 \end{cases}
+\begin{cases} a_{11}x_1 + a_{12}x_2 = b_1 \\\\ a_{21}x_1 + a_{22}x_2 = b_2 \end{cases}
 $$
 
 or in matrix form:
 
 $$
-A\mathbf{x} = \mathbf{b} \quad \text{where} \quad A = \begin{bmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{bmatrix}, \quad \mathbf{x} = \begin{bmatrix} x_1 \\ x_2 \end{bmatrix}, \quad \mathbf{b} = \begin{bmatrix} b_1 \\ b_2 \end{bmatrix}
+A\mathbf{x} = \mathbf{b} \quad \text{where} \quad A = \begin{bmatrix} a_{11} & a_{12} \\\\ a_{21} & a_{22} \end{bmatrix}, \quad \mathbf{x} = \begin{bmatrix} x_1 \\\\ x_2 \end{bmatrix}, \quad \mathbf{b} = \begin{bmatrix} b_1 \\\\ b_2 \end{bmatrix}
 $$
 
 We know how to solve these directly using methods like Gaussian elimination. Unfortunately, those methods tend to be computationally expensive for large systems, so very smart people came up with **iterative methods** that approximate the solution efficiently.
@@ -83,7 +83,7 @@ $$
 Rewriting the system in Jacobi form:
 
 $$
-\begin{cases} x = \frac{6 - y - z}{2} \\ y = \frac{-x + z}{3} \\ z = \frac{3 + x - y}{2} \end{cases}
+\begin{cases} x = \frac{6 - y - z}{2} \\\\ y = \frac{-x + z}{3} \\\\ z = \frac{3 + x - y}{2} \end{cases}
 $$
 
 Starting with the initial guess $\mathbf{p}^{(0)} = (0, 0, 0)$:
