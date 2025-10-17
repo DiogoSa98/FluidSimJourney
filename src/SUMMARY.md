@@ -5,6 +5,7 @@
 - [Moving Densities](./moving-densities.md)
   - [Diffuse Bad](./diffusion-bad.md)
   - [Diffuse Good](./diffuse-good.md)
+  - [Following Velocity](following-velocity.md)
 - [Background](./background.md)
   - [Taylor Series](background/taylor-series.md)
   - [Numerical Differentiation](background/numerical-differentiation.md)

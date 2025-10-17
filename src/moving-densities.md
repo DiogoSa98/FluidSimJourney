@@ -25,4 +25,4 @@ That’s the first building block — adding density into the world. The interes
 
 - [Diffusion Bad](diffusion-bad.md)
 - [Diffusion Good](diffuse-good.md)
-- [Following Velocity]
+- [Following Velocity](following-velocity.md)
