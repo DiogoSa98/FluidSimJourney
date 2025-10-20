@@ -186,3 +186,51 @@ then have to convert these particles back to grid values. - not obvious
 
 better method is to find the particles which over a single time step end
 up exactly at the grid cell’s centers as shown in Figure 6
+
+WRITE TODO
+
+finish this part with:
+
+- explain the idea behind lagrangian advection (explain why it's semi-lagrangian (only thinking about a particle based scheme not actually using particles))
+
+- explain why forward tracing is bad, possible solutions
+
+- explain backwards tracing
+
+- explain why bilinear interpolation is bad, possible solutions
+
+- create the p5 js visualization with option to toggle on off velocity field arrows and input velocity field equations
+
+evolving velocities:
+explain the core ideas
+explain each term mathematically and physical meaning
+explain how we can use the same routines here
+explain the project step all the way
+
+boundary conditions:
+fully explain the one used
+implement a wrap around boundary condition and show it as the "final p5.js sketch" with an option to switch between boundary conditions.
+
+review everything:
+dont write stuff you dont know,
+write density as "ro" not p in math
+
+read the 1999 paper Stable Fluids
+review everything in light of it and write another chapter with the main differences and takeaways
+
+write the missing chapters on the background:
+mostly numerical integration of ODEs (likely skip the stability analysis), likely poisson equation and stuff for project routine
+
+Proceed with the Fluid simulation for computer graphics book; dont study everything just find out the core improvements, write about and improve the 2D simulation
+
+after that start writing the 3d simulation in unity
+
+once its done make 3 cool feature inspired by returnal:
+
+1. show how you can write to the simulation shooting and the bullets affect the velocity field or air part of the simulation or whatever
+2. show how grass (instanced im guessing go rewatch ghost of tsushima / horizon method) can sway according to the velocity field
+3. voxelize/raymarch some smoke density and afterwards a blob thingy like they do in returnal
+4. show how shooting moves that smoke or blob thingy
+5. do the raymarch of a skeletal mesh and again show how its affected on the velocity field...
+
+continue reading the book see what other features would be cool to implement??

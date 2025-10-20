@@ -1,7 +1,7 @@
 function createDiffusionSim(containerId, options = {}) {
   const config = {
     canvasSize: options.canvasSize || 400,
-    numberOfCells: options.numberOfCells || 19,
+    numberOfCells: options.numberOfCells || 20,
     useDiffuseBad: options.useDiffuseBad || false,
   };
 
@@ -18,11 +18,11 @@ function createDiffusionSim(containerId, options = {}) {
 
   // Create p5 instance scoped to this simulation
   new p5((p) => {
-    let N = config.numberOfCells;
+    let N = config.numberOfCells - 2; // number of interior cells along one dimension
     let dens = [];
     let dens_prev = [];
     let canvasSize = config.canvasSize;
-    let cellSize = canvasSize / (N + 1);
+    let cellSize = canvasSize / config.numberOfCells;
     let simPlaying = false;
 
     let playBtn, diffSlider;
@@ -30,6 +30,10 @@ function createDiffusionSim(containerId, options = {}) {
     let diffValue;
 
     let isMousePressed = false;
+
+    let velX = [];
+    let velY = [];
+    let maxVelMag = 0;
 
     p.setup = function () {
       let cnv = p.createCanvas(canvasSize, canvasSize);
@@ -40,8 +44,8 @@ function createDiffusionSim(containerId, options = {}) {
       cnv.mouse;
       p.frameRate(30);
 
+      computeVelocityField();
       reset_cells();
-
       // Create simulation controls
       var buttonsParent = document.querySelector(
         `#${container.id} .sketch-buttons-container`
@@ -93,8 +97,8 @@ function createDiffusionSim(containerId, options = {}) {
       let cellI = Math.floor(p.mouseX / cellSize);
       let cellJ = Math.floor(p.mouseY / cellSize);
       // console.log(`i ${cellI} j ${cellJ}`);
-      // allow adding density on the interior and boundary cells 0..N+1
-      if (cellI >= 0 && cellI <= N + 1 && cellJ >= 0 && cellJ <= N + 1) {
+      // allow adding density on the interior cells 1..N
+      if (cellI > 0 && cellI <= N && cellJ > 0 && cellJ <= N) {
         dens[cellI][cellJ] = 1;
       }
     }
@@ -117,6 +121,8 @@ function createDiffusionSim(containerId, options = {}) {
       if (simPlaying) {
         [dens_prev, dens] = swap(dens_prev, dens);
         step_diffuse();
+        [dens_prev, dens] = swap(dens_prev, dens);
+        advect();
       }
 
       // update sketch parameters
@@ -140,11 +146,16 @@ function createDiffusionSim(containerId, options = {}) {
         p.line(i * cellSize, 0, i * cellSize, canvasSize); // vertical lines
         p.line(0, i * cellSize, canvasSize, i * cellSize); // horizontal lines
       }
+
+      p.strokeWeight(0);
+      drawVelocityField(velX, velY, maxVelMag);
     };
 
     function step_once() {
       [dens_prev, dens] = swap(dens_prev, dens);
       step_diffuse();
+      [dens_prev, dens] = swap(dens_prev, dens);
+      advect();
     }
 
     function swap(a, b) {
@@ -226,6 +237,121 @@ function createDiffusionSim(containerId, options = {}) {
       x[0][N + 1] = 0.5 * (x[1][N + 1] + x[0][N]);
       x[N + 1][0] = 0.5 * (x[N][0] + x[N + 1][1]);
       x[N + 1][N + 1] = 0.5 * (x[N][N + 1] + x[N + 1][N]);
+    }
+
+    function computeVelocityField() {
+      velX = new Array(N + 2);
+      velY = new Array(N + 2);
+      maxVelMag = 0;
+      for (let i = 0; i <= N + 1; i++) {
+        velX[i] = new Array(N + 2).fill(0);
+        velY[i] = new Array(N + 2).fill(0);
+      }
+      // set velocity field values;
+      // offset so that center of grid is at (0,0)
+      // divide by N so velocity magnitudes are in [0,1]
+      // i.e 0.2 means covering 20% of domain per second
+      let halfN = Math.ceil(config.numberOfCells / 2);
+      for (let i = 0; i <= N + 1; i++) {
+        for (let j = 0; j <= N + 1; j++) {
+          // velX[i][j] = 0.1 * (i - halfN) + 0.01;
+          // velY[i][j] = 0;
+          velX[i][j] = 0.5 * (i - halfN) + 0.01;
+          velY[i][j] = -0.5 * (j - halfN) + 0.01;
+          // velX[i][j] = 1; // positive x goes from top to bottom cause i is rows i = 0 is top row i = N+1 is bottom row
+          // velY[i][j] = 0; // positive y goes from left to right cause j = 0 is leftmost column j = N+1 is rightmost column
+        }
+      }
+      for (let i = 0; i <= N + 1; i++) {
+        for (let j = 0; j <= N + 1; j++) {
+          let velMag = Math.sqrt(
+            velX[i][j] * velX[i][j] + velY[i][j] * velY[i][j]
+          );
+          if (velMag > maxVelMag) maxVelMag = velMag;
+        }
+      }
+    }
+
+    function advect() {
+      let dt = p.deltaTime * 0.001;
+      for (let i = 1; i <= N; i++) {
+        for (let j = 1; j <= N; j++) {
+          // compute "particle" position at previous time step
+          let x = i - dt * velY[i][j];
+          let y = j - dt * velX[i][j];
+          // console.log(
+          //   `i ${i} j ${j} vx ${velX[i][j].toFixed(3)} vy ${velY[i][j].toFixed(
+          //     3
+          //   )}`
+          // );
+          // enforce bounds, so no interpolation goes outside grid
+          if (x < 0.5) x = 0.5;
+          if (x > N + 0.5) x = N + 0.5;
+          if (y < 0.5) y = 0.5;
+          if (y > N + 0.5) y = N + 0.5;
+          // cell indexes
+          let i0 = Math.floor(x);
+          let j0 = Math.floor(y);
+          let i1 = i0 + 1; // right cell index
+          let j1 = j0 + 1; // upper cell index
+
+          // fractioal parts for interpolation
+          let s1 = x - i0;
+          let s0 = 1 - s1;
+          let t1 = y - j0;
+          let t0 = 1 - t1;
+
+          // bilinear interpolation
+          dens[i][j] =
+            s0 * (t0 * dens_prev[i0][j0] + t1 * dens_prev[i0][j1]) +
+            s1 * (t0 * dens_prev[i1][j0] + t1 * dens_prev[i1][j1]);
+        }
+      }
+      set_bnd(N, dens);
+    }
+    function drawVelocityField(velX, velY, maxVelMag) {
+      let h = cellSize;
+      for (let i = 0; i <= N + 1; i++) {
+        for (let j = 0; j <= N + 1; j++) {
+          let velMag = Math.sqrt(
+            velX[i][j] * velX[i][j] + velY[i][j] * velY[i][j]
+          );
+          // avoid divide-by-zero when maxVelMag is 0
+          let t = maxVelMag > 0 ? velMag / maxVelMag : 0;
+          let triangleColor = p.lerpColor(
+            p.color(84, 241, 243),
+            p.color(243, 86, 84),
+            t
+          );
+          p.fill(triangleColor);
+
+          // center of the cell: xi = i*h + h/2, yi = j*h + h/2
+          let cx = i * h + h / 2;
+          let cy = j * h + h / 2;
+
+          // base triangle pointing "up" (local coordinates)
+          let x1 = cx - h / 6,
+            y1 = cy + h / 3; // left-bottom
+          let x2 = cx + h / 6,
+            y2 = cy + h / 3; // right-bottom
+          let x3 = cx,
+            y3 = cy - h / 3; // top
+
+          // do atan x,y rather than y,x cause x is i going from top to bottom and y is j going from left to right
+          let angle = Math.atan2(velX[i][j], velY[i][j]) + Math.PI / 2; // +90 degrees cause we defined initial triangle pointing up
+          let c = Math.cos(angle),
+            s = Math.sin(angle);
+          function rot(px, py) {
+            let dx = px - cx,
+              dy = py - cy;
+            return [cx + dx * c - dy * s, cy + dx * s + dy * c];
+          }
+          let [rx1, ry1] = rot(x1, y1);
+          let [rx2, ry2] = rot(x2, y2);
+          let [rx3, ry3] = rot(x3, y3);
+          p.triangle(rx1, ry1, rx2, ry2, rx3, ry3);
+        }
+      }
     }
   });
 }
