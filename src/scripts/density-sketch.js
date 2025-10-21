@@ -3,6 +3,7 @@ function createDiffusionSim(containerId, options = {}) {
     canvasSize: options.canvasSize || 400,
     numberOfCells: options.numberOfCells || 20,
     useDiffuseBad: options.useDiffuseBad || false,
+    useVelocityField: options.useVelocityField || false,
   };
 
   // Create DOM structure inside this container
@@ -121,8 +122,10 @@ function createDiffusionSim(containerId, options = {}) {
       if (simPlaying) {
         [dens_prev, dens] = swap(dens_prev, dens);
         step_diffuse();
-        [dens_prev, dens] = swap(dens_prev, dens);
-        advect();
+        if (config.useVelocityField) {
+          [dens_prev, dens] = swap(dens_prev, dens);
+          advect();
+        }
       }
 
       // update sketch parameters
@@ -140,22 +143,26 @@ function createDiffusionSim(containerId, options = {}) {
       }
 
       // draw grid lines
-      p.stroke(150); // gray lines
-      p.strokeWeight(1);
+      p.stroke(120); // gray lines
+      p.strokeWeight(0.7);
       for (let i = 0; i <= N + 2; i++) {
         p.line(i * cellSize, 0, i * cellSize, canvasSize); // vertical lines
         p.line(0, i * cellSize, canvasSize, i * cellSize); // horizontal lines
       }
 
-      p.strokeWeight(0);
-      drawVelocityField(velX, velY, maxVelMag);
+      if (config.useVelocityField) {
+        p.strokeWeight(0);
+        drawVelocityField(velX, velY, maxVelMag);
+      }
     };
 
     function step_once() {
       [dens_prev, dens] = swap(dens_prev, dens);
       step_diffuse();
-      [dens_prev, dens] = swap(dens_prev, dens);
-      advect();
+      if (config.useVelocityField) {
+        [dens_prev, dens] = swap(dens_prev, dens);
+        advect();
+      }
     }
 
     function swap(a, b) {

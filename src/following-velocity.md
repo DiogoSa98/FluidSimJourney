@@ -3,19 +3,19 @@
 The final term of the density solver is the **advection term** (sometimes also called _convection_ or _transport_):
 
 $$
--(\mathbf{u} \cdot \nabla)p
+-(\mathbf{u} \cdot \nabla)\rho
 $$
 
 It describes how the density is **transported along the velocity field**. In Stam’s equation, for a constant velocity field **u** and no diffusion or sources, we can write:
 
 $$
-\frac{dp}{dt} = -(\mathbf{u} \cdot \nabla)p
+\frac{d\rho}{dt} = -(\mathbf{u} \cdot \nabla)\rho
 $$
 
 or equivalently,
 
 $$
-\frac{dp}{dt} + (\mathbf{u} \cdot \nabla)p = 0
+\frac{d\rho}{dt} + (\mathbf{u} \cdot \nabla)\rho = 0
 $$
 
 This just means that the density is moving around due to the velocity field, but the total amount of density in the scene stays the same — it’s just being carried along.
@@ -28,42 +28,42 @@ In multivariable calculus, this is known as the **directional derivative** — i
 While the gradient gives the rate of change in the direction of the coordinate axes, the directional derivative gives the rate of change along an arbitrary vector.
 In our case, that vector is the **velocity field**, which literally defines _how the density moves_ in space.
 
-So $(\mathbf{u} \cdot \nabla)p$ tells us how the scalar $p$ (our density) changes as we move along the flow defined by **u**. In 2D, it expands as:
+So $(\mathbf{u} \cdot \nabla)\rho$ tells us how the scalar $\rho$ (our density) changes as we move along the flow defined by **u**. In 2D, it expands as:
 
 $$
-(\mathbf{u}\cdot\nabla)p = u_x \frac{\partial p}{\partial x} + u_y \frac{\partial p}{\partial y}.
+(\mathbf{u}\cdot\nabla)\rho = u_x \frac{\partial p}{\partial x} + u_y \frac{\partial \rho}{\partial y}.
 $$
 
 ## Deriving an update rule (Forward Euler)
 
 Let’s start simple.  
 Assume the velocity field **u** is constant and known (we’re defining it).  
-We want an update rule that gives us $p^{n+1}$ (density at time $t+\Delta t$) from $p^n$ (density at time $t$).
+We want an update rule that gives us $\rho^{n+1}$ (density at time $t+\Delta t$) from $\rho^n$ (density at time $t$).
 
 Just like in the diffusion step, we can start with the **Forward Euler** integration scheme:
 
 $$
-p^{n+1} = p^n + \Delta t\, f(p^n)
+\rho^{n+1} = \rho^n + \Delta t\\, f(\rho^n)
 $$
 
-where $f(p)$ approximates $\frac{dp}{dt}$.
+where $f(\rho)$ approximates $\frac{d\rho}{dt}$.
 
 Here,
 
 $$
-f(p) = -(\mathbf{u}\cdot\nabla)p.
+f(\rho) = -(\mathbf{u}\cdot\nabla)\rho.
 $$
 
 Let’s approximate the spatial derivatives using **forward differences** (just for now, the simplest possible):
 
 $$
-\frac{\partial p}{\partial x} \approx \frac{p_{i+1,j} - p_{i,j}}{h}, \quad \frac{\partial p}{\partial y} \approx \frac{p_{i,j+1} - p_{i,j}}{h}.
+\frac{\partial \rho}{\partial x} \approx \frac{\rho_{i+1,j} - \rho_{i,j}}{h}, \quad \frac{\partial \rho}{\partial y} \approx \frac{\rho_{i,j+1} - \rho_{i,j}}{h}.
 $$
 
 Plugging into our equation:
 
 $$
-p_{i,j}^{n+1} = p^n_{i,j} - \Delta t \left( u_x \frac{p^n_{i+1,j} - p^n_{i,j}}{h} + u_y \frac{p^n_{i,j+1} - p^n_{i,j}}{h} \right).
+\rho_{i,j}^{n+1} = \rho^n_{i,j} - \Delta t \left( u_x \frac{\rho^n_{i+1,j} - \rho^n_{i,j}}{h} + u_y \frac{\rho^n_{i,j+1} - \rho^n_{i,j}}{h} \right).
 $$
 
 This is a simple, explicit, and easy-to-implement update rule.  
@@ -84,25 +84,25 @@ We’ll use **Backward Euler** as the time integration scheme, and a **central d
 In 1D, the advection equation becomes:
 
 $$
-\frac{\partial p}{\partial t} = -u \frac{\partial p}{\partial x}.
+\frac{\partial \rho}{\partial t} = -u \frac{\partial \rho}{\partial x}.
 $$
 
 Using **Backward Euler** in time:
 
 $$
-\frac{p_i^{n+1} - p_i^n}{\Delta t} = -u \frac{p_{i+1}^{n+1} - p_{i-1}^{n+1}}{2h}.
+\frac{\rho_i^{n+1} - \rho_i^n}{\Delta t} = -u \frac{\rho_{i+1}^{n+1} - \rho_{i-1}^{n+1}}{2h}.
 $$
 
 Rearranging terms:
 
 $$
--\frac{u\Delta t}{2h}\, p_{i-1}^{n+1} + p^{n+1}_i + \frac{u\Delta t}{2h}\, p_{i+1}^{n+1} = p^n_i.
+-\frac{u\Delta t}{2h}\\, \rho_{i-1}^{n+1} + \rho^{n+1}_i + \frac{u\Delta t}{2h}\\, \rho_{i+1}^{n+1} = \rho^n_i.
 $$
 
 Letting $a = \frac{u\Delta t}{2h}$, this becomes:
 
 $$
--a\,p^{n+1}_{i-1} + p^{n+1}_i + a\,p^{n+1}_{i+1} = p^n_i.
+-a\\,\rho^{n+1}_{i-1} + \rho^{n+1}_i + a\\,\rho^{n+1}_{i+1} = \rho^n_i.
 $$
 
 If we write this for every grid cell, we get a **tridiagonal system** with off-diagonal terms $(-a, +a)$.
@@ -118,14 +118,14 @@ $$
    0 & 0 & 0 & -a & 1
 \end{bmatrix}
 \begin{bmatrix}
-p^{n+1}_1\\\\
-p^{n+1}_2\\\\
- p^{n+1}_3\\\\
-  p^{n+1}_4\\\\
-   p^{n+1}_5
+\rho^{n+1}_1\\\\
+\rho^{n+1}_2\\\\
+ \rho^{n+1}_3\\\\
+  \rho^{n+1}_4\\\\
+   \rho^{n+1}_5
    \end{bmatrix} =
    \begin{bmatrix}
-   p^n_1\\\\ p^n_2\\\\ p^n_3\\\\ p^n_4\\\\ p^n_5 \end{bmatrix}.
+   \rho^n_1\\\\ \rho^n_2\\\\ \rho^n_3\\\\ \rho^n_4\\\\ \rho^n_5 \end{bmatrix}.
 $$
 
 This is solvable, but it’s not ideal.
@@ -172,65 +172,127 @@ So far, everything we’ve done lives in the **Eulerian viewpoint** — we look 
 
 The **Lagrangian viewpoint**, on the other hand, treats the fluid as a swarm of individual “particles” that we follow through space and time. Each particle carries its own position, velocity, etc., and we observe how those quantities change as the particle moves.
 
-## Lagrangian Advection
+## Semi-Lagrangian Advection
 
-moving densities would be easy to solve if the density
-were modeled as a set of particles.
-In this case we would simply have to trace the particles
-though the velocity field
+To solve the advection step, Stam takes a page from the **Lagrangian** viewpoint:
 
-For example, we could pretend that each grid cell’s center is a
-particle and trace it through the velocity field as shown in Figure 6 (b)
-he problem is that we
-then have to convert these particles back to grid values. - not obvious
+> _“The key idea behind this new technique is that moving densities would be easy to solve if the density were modeled as a set of particles. In this case we would simply have to trace the particles through the velocity field. For example, we could pretend that each grid cell’s center is a particle and trace it through the velocity field…”_
 
-better method is to find the particles which over a single time step end
-up exactly at the grid cell’s centers as shown in Figure 6
+As he states, we can easily write an update rule for our particles’ positions:
 
-WRITE TODO
+$$
+\mathbf{p}^{n+1} = \mathbf{p}^n + \Delta t \frac{d\mathbf{p}}{dt}
+$$
 
-finish this part with:
+where $\frac{d\mathbf{p}}{dt}$ is the velocity, given by the velocity field itself.  
+This is why the method is called **Semi-Lagrangian** — we’re not truly simulating discrete particles; we’re still using a grid, but we _think_ about each cell as if it were a particle moving through the flow.
 
-- explain the idea behind lagrangian advection (explain why it's semi-lagrangian (only thinking about a particle based scheme not actually using particles))
+### Tracing Backwards Through the Velocity Field
 
-- explain why forward tracing is bad, possible solutions
+If we were to trace particles _forward_, the question would arise of how to turn particles ammounts back into density values. We’d likely have to compute where each one lands and how its mass contributes to nearby cells. Apparently several techniques were developed using that idea, but Stam proposes a simpler alternative: **trace backwards**.
 
-- explain backwards tracing
+We know the current density field $\rho^n$. To find the density at a new time step $\rho^{n+1}$, we follow the velocity field _backward_ from each cell center to find where the density came from:
 
-- explain why bilinear interpolation is bad, possible solutions
+$$
+\mathbf{p}^n = \mathbf{p}^{n+1} - \Delta t \\, \mathbf{u}
+$$
 
-- create the p5 js visualization with option to toggle on off velocity field arrows and input velocity field equations
+This is the key insight: instead of pushing particles forward, we _pull density backward_ from where it came.
 
-evolving velocities:
-explain the core ideas
-explain each term mathematically and physical meaning
-explain how we can use the same routines here
-explain the project step all the way
+```js
+for (let i = 1; i <= N; i++) {
+  for (let j = 1; j <= N; j++) {
+    let x = i - deltaT * velX[i][j];
+    let y = j - deltaT * velY[i][j];
+    // interpolate density at (x, y)
+  }
+}
+```
 
-boundary conditions:
-fully explain the one used
-implement a wrap around boundary condition and show it as the "final p5.js sketch" with an option to switch between boundary conditions.
+**Note:**  
+This assumes that the grid indices `(i, j)` correspond to the **center** of each cell.  
+If grid coordinates represent cell corners instead, you would need to offset by half a cell width (`+h/2`) when tracing positions.
 
-review everything:
-dont write stuff you dont know,
-write density as "ro" not p in math
+### Bilinear Interpolation
 
-read the 1999 paper Stable Fluids
-review everything in light of it and write another chapter with the main differences and takeaways
+Once we have the backtraced position $(x, y)$, we convert it to grid indices. The integer part gives us the upper-left cell center (this of course depends on how you construct your grid), while the fractional part tells us the percentage offset we have in relation to nearby cells. We then use **bilinear interpolation** (weighted average of the four surrounding cells) to sample the previous density field:
 
-write the missing chapters on the background:
-mostly numerical integration of ODEs (likely skip the stability analysis), likely poisson equation and stuff for project routine
+```
+(i0, j0)       (i0+1, j0)
+   +--------------+
+   |              |
+   |   (x, y)     |
+   |              |
+   +--------------+
+(i0, j0+1)     (i0+1, j0+1)
+```
 
-Proceed with the Fluid simulation for computer graphics book; dont study everything just find out the core improvements, write about and improve the 2D simulation
+- $i_0 = \lfloor x \rfloor$, $i_1 = i_0 + 1$
+- $j_0 = \lfloor y \rfloor$, $j_1 = j_0 + 1$
+- $s = x - i_0$, $t = y - j_0$
 
-after that start writing the 3d simulation in unity
+Interpolate horizontally along the bottom row:
 
-once its done make 3 cool feature inspired by returnal:
+$$
+f(x,j_0) = (1 - s)\\,\rho_{i_0,j_0} + s\\,\rho_{i_1,j_0}
+$$
 
-1. show how you can write to the simulation shooting and the bullets affect the velocity field or air part of the simulation or whatever
-2. show how grass (instanced im guessing go rewatch ghost of tsushima / horizon method) can sway according to the velocity field
-3. voxelize/raymarch some smoke density and afterwards a blob thingy like they do in returnal
-4. show how shooting moves that smoke or blob thingy
-5. do the raymarch of a skeletal mesh and again show how its affected on the velocity field...
+Interpolate horizontally along the top row:
 
-continue reading the book see what other features would be cool to implement??
+$$
+f(x,j_1) = (1 - s)\\,\rho_{i_0,j_1} + s\\,\rho_{i_1,j_1}
+$$
+
+Interpolate vertically between those two:
+
+$$
+\rho(x,y) = (1 - t)\\,f(x,j_0) + t\\,f(x,j_1)
+$$
+
+This can be written compactly as:
+
+$$
+\rho(x, y) = (1 - s)(1 - t)\rho_{i_0,j_0} + s(1 - t)\rho_{i_1,j_0} + (1 - s)t\rho_{i_0,j_1} + st\rho_{i_1,j_1}
+$$
+
+### On Numerical Diffusion
+
+Here’s where things get tricky. Bilinear interpolation introduces **numerical diffusion**: sharp features in the density field quickly smooth out, and with coarse grids or large time steps, the density may even dissipate completely.
+
+This diffusion isn’t physical — it’s a numerical artifact of interpolation.  
+Stam acknowledges this in the paper, and many later works have explored **higher-order advection schemes** to mitigate the problem, which I hope to explore in the future.
+
+### Quick Note on Units and Index Space
+
+We define our domain to have a “physical” size of 1 (you can think of it as 1 meter).  
+This means $x, y \in [0,1]$.
+
+However, our grid has $N$ cells, so each cell is $1/N$ units wide.  
+When we write:
+
+$$
+x = i - \Delta t_0 \\, u_x
+$$
+
+we are working in **index space**, not world space.  
+If our velocity field is expressed in world units (e.g., 0.2 means “move across 20% of the domain per second”), we need to convert it to **cells per second** by multiplying by $N$.
+
+This is why Stam defines:
+
+$$
+\text{dt0} = \Delta t \times N
+$$
+
+It’s simply converting the velocity from world-space units to cell-space units.
+
+### Conclusion
+
+And there we have it — densities moving smoothly along a velocity field!  
+If you set the diffusion rate to zero, you’ll see how the density purely follows the flow, though over time, interpolation errors cause it to blur and fade.
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+<div id="diffusion-velocity" class="sketch-container"></div>
+<script src="scripts/density-sketch.js"></script>
+<script>
+  createDiffusionSim("diffusion-velocity", { useVelocityField: true });
+</script>
