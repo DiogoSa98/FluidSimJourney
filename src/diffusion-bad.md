@@ -44,7 +44,7 @@ $$
 This is a famous equation — it’s equivalent to the **heat equation** for a constant diffusion rate $k$.  
 From Wikipedia: “It describes the macroscopic behavior of many micro-particles in Brownian motion, resulting from the random movements and collisions of the particles.”
 
-Whatever that means — but it’s cool.
+It sounds cool, whatever that means.
 
 The **Laplacian operator** $\nabla^2$ essentially measures _how much a point differs from its surrounding neighbors_. Personally, I like to think of it as the **divergence of the gradient** (it can be written $\nabla \cdot \nabla f$).
 
