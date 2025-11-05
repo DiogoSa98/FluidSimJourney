@@ -151,5 +151,4 @@ Consider two examples:
 Now that we’ve built an intuitive picture of what incompressibility means, let’s look more closely at how it emerges and how the pressure term in project() ensures the condition is satisfied
 
 - [Deriving the Incompressibility Constraint](deriving-incompressibility.md)
-- [Pressure as an Enforcer of Incompressibility](role-of-pressure.md)
-- [Deriving the Projection Method](deriving-projection.md)
+- [Enforcing Incompressibility, from Pressure to Projection](role-of-pressure.md)

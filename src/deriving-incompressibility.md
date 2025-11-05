@@ -1,6 +1,6 @@
 # Deriving the Incompressibility Constraint
 
-_Reference: [Fluid Simulation for Computer Games, Second Edition - Robert Bridson, Appendix B]()_
+_Reference: Fluid Simulation for Computer Games, Second Edition - Robert Bridson, Appendix B_
 
 This section is taken straight out of Bridson's work.
 We begin with the **principle of mass conservation**. If no fluid is entering or leaving a given region of space there should be no gain/loss of mass along time, the total mass inside that region must remain constant.
@@ -11,33 +11,33 @@ Let’s consider some fixed region of space, denoted by $\Omega$.
 So, because $\rho = m / V$ we can think of the total mass in the region as adding up infinitesmly small bits of density multiplied by the tiny volume $d\Omega$, that is integrating the density field $\rho(\mathbf{x}, t)$ over the volume:
 
 $$
-M(t) = \iiint_{\Omega} \rho \, d\Omega
+M(t) = \iiint_{\Omega} \rho \\, d\Omega
 $$
 
 ### Rate of change of mass
 
-The rate of change of mass with respect to time only changes as fluid enters or leaves the region. Since mass cannot be created or destroyed inside $\Omega$, the only way $M$ changes is through **flux across its boundary**$\partial\Omega$. This is basically just Flux from multivariable calculus; which equates to breaking up the surface that bounds $\Omega$ into infinitesimal small pieces of surface $\partial\Omega$ and measuring how much mass is going through a piece which we can do by multiplying density with the dot product between the velocity and surface normal at that "tiny piece".
+The rate of change of mass with respect to time only changes as fluid enters or leaves the region. Since mass cannot be created or destroyed inside $\Omega$, the only way $M$ changes is through **flux across its boundary** $\partial\Omega$. This is basically just Flux from multivariable calculus; which equates to breaking up the surface that bounds $\Omega$ into infinitesimal small pieces of surface $\partial\Omega$ and measuring how much mass is going through a piece which we can do by multiplying density with the dot product between the velocity and surface normal at that "tiny piece".
 
 Integrating over the whole surface gives:
 
 $$
-\frac{dM}{dt} = - \iint_{\partial \Omega} \rho\, (\mathbf{u} \cdot \hat{\mathbf{n}})\, dS
+\frac{dM}{dt} = - \iint_{\partial \Omega} \rho\\, (\mathbf{u} \cdot \hat{\mathbf{n}})\\, dS
 $$
 
-Note the integral is negative because $\hat{\mathbf{n}}$ is the outward-pointing normal, flow leaving means less mass in region so $M$ decreases (negative rate of change).
+Note the integral is negative because $\hat{\mathbf{n}}$ is the outward-pointing normal at the surface, fluid leaving means less mass in region so $M$ decreases (negative rate of change).
 
 ### Applying the divergence theorem
 
 Then, also from multivariable calculus, we resort to the magnificent divergence theorem which states that adding up all the little bits of outward flow in a volume using a triple integral of divergence gives the total outward flow from that volume, as measured by the flux through its surface.
 
 $$
-\iint_{\partial \Omega} \rho\, (\mathbf{u} \cdot \hat{\mathbf{n}})\, dS = \iiint_{\Omega} \nabla \cdot (\rho \mathbf{u})\, d\Omega
+\iint_{\partial \Omega} \rho\\, (\mathbf{u} \cdot \hat{\mathbf{n}})\\, dS = \iiint_{\Omega} \nabla \cdot (\rho \mathbf{u})\\, d\Omega
 $$
 
 Substituting into the mass rate equation:
 
 $$
-\frac{dM}{dt} = - \iiint_{\Omega} \nabla \cdot (\rho \mathbf{u})\, d\Omega
+\frac{dM}{dt} = - \iiint_{\Omega} \nabla \cdot (\rho \mathbf{u})\\, d\Omega
 $$
 
 ### Expressing $dM/dt$ as a volume integral
@@ -45,7 +45,7 @@ $$
 On the other hand, from the definition of $M(t)$:
 
 $$
-M(t) = \iiint_{\Omega} \rho\, d\Omega
+M(t) = \iiint_{\Omega} \rho\\, d\Omega
 $$
 
 we can take the time derivative (assuming $\Omega$ is fixed in space) and move the derivative inside the integral:
@@ -61,7 +61,7 @@ _(We can safely move the derivative inside because both the region and the limit
 Now we have two equivalent expressions for the rate of change of mass:
 
 $$
-\iiint_{\Omega} \frac{\partial \rho}{\partial t}\, d\Omega = - \iiint_{\Omega} \nabla \cdot (\rho \mathbf{u})\, d\Omega
+\iiint_{\Omega} \frac{\partial \rho}{\partial t}\\, d\Omega = - \iiint_{\Omega} \nabla \cdot (\rho \mathbf{u})\\, d\Omega
 $$
 
 Since this equality must hold for **any** region $\Omega$, the integrands themselves must be equal.  
@@ -76,7 +76,7 @@ From here we could simply state that for our fluid to be incompressible we want 
 However, this explanation skips over an important idea — how density changes as a fluid moves.
 To understand that properly, we need to introduce the **material derivative**.
 
-### The Material Derivative
+## The Material Derivative
 
 Before moving forward, let's clarify what we mean when we talk about properties of “moving particles” in a fluid.  
 In most texts (including Bridson’s), when we refer to a _particle_ of fluid, we’re not talking about a literal molecule, but rather an infinitesimally small “chunk” or “tagged bit” of fluid — small enough to assume uniform properties inside it, but large enough to contain many molecules.
@@ -114,7 +114,7 @@ This second term $\mathbf{u} \cdot \nabla f$ represents the **directional deriva
 
 In short, the material derivative tells us _how a quantity changes for a specific moving bit of fluid_, combining both the explicit change in time and the change due to motion.
 
-### Finalizing the Incompressibility Constraint
+## Finalizing the Incompressibility Constraint
 
 From the principle of mass conservation we arrived at the **continuity equation**:
 

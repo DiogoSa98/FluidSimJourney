@@ -157,7 +157,7 @@ To experiment with the simulation below, click and drag on the grid to set densi
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 <div id="diffusion-bad" class="sketch-container"></div>
-<script src="scripts/density-sketch.js"></script>
-<script>
-  createDiffusionSim("diffusion-bad", { useDiffuseBad: true });
+<script type="module">
+  import { createFluidSim } from "./scripts/fluid-sketch.js";
+  createFluidSim("diffusion-bad", { useDiffuseBad: true });
 </script>

@@ -273,7 +273,7 @@ Anyway, those are future adventures. For now, here’s our implicit diffusion so
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 <div id="diffusion-good" class="sketch-container"></div>
-<script src="scripts/density-sketch.js"></script>
-<script>
-  createDiffusionSim("diffusion-good");
+<script type="module">
+  import { createFluidSim } from "./scripts/fluid-sketch.js";
+  createFluidSim("diffusion-good");
 </script>

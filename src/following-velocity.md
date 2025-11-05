@@ -292,7 +292,7 @@ If you set the diffusion rate to zero, you’ll see how the density purely follo
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 <div id="diffusion-velocity" class="sketch-container"></div>
-<script src="scripts/density-sketch.js"></script>
-<script>
-  createDiffusionSim("diffusion-velocity", { useVelocityField: true });
+<script type="module">
+  import { createFluidSim } from "./scripts/fluid-sketch.js";
+  createFluidSim("diffusion-velocity", { useDiffuseAdvection: true, useStaticVelocityField: true });
 </script>
