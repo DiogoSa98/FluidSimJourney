@@ -9,6 +9,8 @@
 - [Evolving Velocities](evolving-velocities.md)
   - [Deriving the Incompressibility Constraint](deriving-incompressibility.md)
   - [Enforcing Incompressibility, from Pressure to Projection](role-of-pressure.md)
+    <!-- - [Boundary Conditions]
+- [MAC Grid](mac-grid.md)
 - [Background](./background.md)
   - [Taylor Series](background/taylor-series.md)
   - [Numerical Differentiation](background/numerical-differentiation.md)

@@ -158,6 +158,13 @@ function dens_step(
 
   if (useDiffuseAdvection) {
     advect(N, 0, x, x0, u, v, dt);
+  } else {
+    // copy x0 to x cause its where diffuse writes otherwise we don't see anything
+    for (let i = 0; i <= N + 1; i++) {
+      for (let j = 0; j <= N + 1; j++) {
+        x[IX(N, i, j)] = x0[IX(N, i, j)];
+      }
+    }
   }
 }
 

@@ -1,4 +1,5 @@
 import { Fluid } from "./fluid.js";
+import { FluidMAC } from "./fluid-mac.js";
 
 export function createFluidSim(containerId, options = {}) {
   const config = {
@@ -8,6 +9,7 @@ export function createFluidSim(containerId, options = {}) {
     useDiffuseAdvection: options.useDiffuseAdvection || false,
     useStaticVelocityField: options.useStaticVelocityField || false,
     useVelocityStep: options.useVelocityStep || false,
+    useFluidMAC: options.useFluidMAC || false,
   };
 
   // Create DOM structure inside this container
@@ -97,6 +99,13 @@ export function createFluidSim(containerId, options = {}) {
         config.useDiffuseAdvection,
         config.useVelocityStep
       );
+      if (config.useFluidMAC) {
+        fluid = new FluidMAC(
+          N, // interior cells
+          visc,
+          diffuse
+        );
+      }
 
       reset_cells();
     };
@@ -231,7 +240,10 @@ export function createFluidSim(containerId, options = {}) {
       let h = cellSize;
       for (let i = 0; i <= N + 1; i++) {
         for (let j = 0; j <= N + 1; j++) {
-          let vel = fluid.velocityAt(i, j);
+          let vel = config.useFluidMAC
+            ? fluid.velocityAtCellCenter(i, j)
+            : fluid.velocityAt(i, j);
+
           let velX = vel[0];
           let velY = vel[1];
           let velMag = Math.sqrt(velX * velX + velY * velY);
