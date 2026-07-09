@@ -3,3 +3,6 @@ authors = ["Diogo Sá"]
 language = "en"
 src = "src"
 title = "Fluid sim journey"
+
+[output.html]
+site-url = "/fluid-sim-book/"
