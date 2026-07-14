@@ -1,4 +1,7 @@
 # Intro
 
-im a dumbfuck who slept through most of calculus classes and know wants to build a fluid simulator for real time applications.
-I started by looking at the book "Fluid Simulation for Computer Graphics" by XXX but couldn't get passed the first word so i went and studied some vector calculus and reviewed some algebra, went back again and still couldn't get passed the first sentence. Now I dont want to study all of mathematics so what i decided was let me go read the easiest simplest possible fluid simulation paper and encountered the famous "Real-Time Fluid Dynamics for Games" by Jos Stam and guess what, I still couldn't understand shit. Fortunately this paper is small enough that i can see the light at the end of the tunnel, and through many, many, detours i think I'll be able to actually understand what's going on mathematcly on the simulation and not just copy and paste some code to get stuff running. My goal is to really understand what's going on in the paper and use the fluid sim as a starting point to then start reading the Fluid Simulation for Computer Graphics book and improving the simulator or trying out other models as interest me.
+These aren't comprehensive lecture notes or a textbook. They're simply my attempt to organize everything I have to learn to understand fluid simulation beyond just copying code.
+
+What started as "I'll build a simple fluid simulator this weekend" quickly turned into weeks of relearning calculus, numerical methods, and linear algebra before I could even understand the papers I was trying to read.
+
+I'm still very much learning. As I continue exploring the topic, I'll keep adding notes on the mathematics, numerical methods, and simulation techniques I find useful. If you're trying to learn this stuff too, maybe they'll save you a few of the detours I had to take.

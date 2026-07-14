@@ -17,9 +17,9 @@ for a large enough time step $\Delta t$, the values of $x$ will eventually blow 
 
 For the diffusion equation $f(x) = k \nabla^2 x$, this instability happens because each update depends _entirely_ on the previous state. Small numerical errors get amplified over time, especially when $\Delta t$ or $k$ (the diffusion rate) is large.
 
-In theory, we could just reduce $\Delta t$ until it stabilizes, but that would mean doing many more iterations per frame — not very practical if we want smooth, real-time behavior. It’s like trying to stop a car from skidding by driving painfully slow; sure, it works, but it’s not exactly efficient.
+In theory, we could just reduce $\Delta t$ until it stabilizes, but that would mean doing many more iterations per frame — not very practical if we want smooth, real-time behavior.
 
-Actually explaining _why_ the method is unstable is a bit technical, and you can read more about it in the **Numerical Integration of ODEs** section (TODO: actually study and write this).
+Actually explaining _why_ the method is unstable is a bit technical, and you can read more about it in the **Numerical Integration of ODEs** section (TODO write this).
 
 ## Backward Euler to the rescue
 
@@ -147,7 +147,7 @@ At the **boundaries**, I'm assuming cells outside our domain (like $x_{-1}$ or $
 
 Looking at matrix $A$, we can note the following:
 
-1.  As Stam said, **it’s very sparse** — most coefficients are zero (TODO CHECK -> formally, a sparse matrix is one where the majority of elements are zero).
+1.  As Stam said, **it’s very sparse** — most coefficients are zero (TODO check formally, a sparse matrix is one where the majority of elements are zero).
 2.  **It’s diagonally dominant** — since $a > 0$, the diagonal entries $(1 + 2a)$ are larger than the sum of the magnitudes of the other entries in each row.
 
 This diagonal dominance is why the **Gauss-Seidel relaxation method** works here — it’s an iterative technique that approximates the solutions for diagonally dominant systems.  

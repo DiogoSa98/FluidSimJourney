@@ -1,14 +1,10 @@
 # Real-Time Fluid Dynamics for Games
 
-TODO improve this, do some more research and actually read the 1999 paper
+Before writing Real-Time Fluid Dynamics for Games, Jos Stam published Stable Fluids in 1999, introducing the ideas that made his approach to fluid simulation so influential. From what I understand so far, this later paper is a much smaller and more approachable introduction to those same ideas, aimed at getting something running quickly rather than diving into all the theory.
 
-Before this paper, Jos Stam had already shaken up computer graphics with his 1999 paper Stable Fluids. That’s the big, original one — the method behind most of the fluid effects you see in older movies, early real-time demos, even modern games like Returnal reference it (a big reason why I jumped in this rabbit whole in the first place).
+The goal isn't scientific accuracy. Instead, it's to produce visually convincing smoke and fluid motion while remaining stable and fast enough for real-time applications. Better yet, the paper includes the complete C implementation, making it possible to follow both the mathematics and the code side by side.
 
-The 2003 paper Real-Time Fluid Dynamics for Games is basically the “lite” version of Stable Fluids, at least from what I can gather, it looks much more straightforward and less math heavy. It’s Stam taking the same core ideas — solving the Navier–Stokes equations in a way that’s fast, stable, and good-looking — and packaging them for game developers. In other words, this is the practical, “you can code this yourself” version.
-
-The goal isn’t complete scientific accuracy. Stam says it straight: he’s not trying to simulate aerodynamics — he’s trying to make smoke swirl and fluids flow convincingly in real time. The paper is short, easy to read (in theory…), and includes all the C code you need to get something on the screen.
-
-That’s why I’m starting here. Trying to get something up and running fairly quickly while having each step of the solver explained in a way that I can dig into the math at my own pace.
+That's why I'm starting here. Rather than treating the paper as something to blindly implement, I'm using it as an excuse to finally understand the mathematics behind fluid simulation. I'll almost certainly branch into other papers, books, and techniques as I learn more, but this feels like a good place to start.
 
 ## Navier-Stokes equations
 
@@ -20,7 +16,6 @@ $$
 \frac{\partial \mathbf{u}}{\partial t} = -(\mathbf{u} \cdot \nabla)\mathbf{u} + \nu \nabla^2 \mathbf{u} + \mathbf{f}
 $$
 
-// TODO CONFIRM THIS
 Here $\\mathbf{u}$ is the velocity field — a vector field telling you the velocity of the fluid at each point in space. The way I see it, this equation is kind of saying: _the change in velocity over time_ (the left side) comes from three main things: how the fluid moves itself around, how it diffuses or spreads out due to viscosity ($\\nu \\nabla^2 \\mathbf{u}$ term), and whatever external forces are acting on it ($\\mathbf{f}$).
 
 The second equation describes how a **density field** (like a continuous smoke density cause we are not modeling every particle) moves through the velocity field.
@@ -33,9 +28,8 @@ The main idea is that the density $\\rho$ gets carried around by the velocity fi
 
 In _Fluid Simulation for Computer Graphics_, Bridson phrases the Navier-Stokes equations like so:
 
-// TODO CONFIRM THE QUOTE
-
-> "Most fluid flow is governed by the **incompressible Navier–Stokes equations**. Partial differential equations that should hold throughout the fluid."
+> "Most fluid flow of interest in animation is governed by the famous **in-compressible Navier-Stokes equations**, a set of partial differential equations
+that are supposed to hold throughout the fluid"
 
 **Momentum Equation:**
 
@@ -55,8 +49,6 @@ $$
 \nabla \cdot \mathbf{u} = 0
 $$
 
-// TODO CONFIRM THIS
-
 This expresses that the fluid is incompressible — its volume doesn’t change, and there’s no net gain or loss of fluid at any point.
 
 So, depending on what assumptions you make — incompressible vs. compressible flow, constant viscosity, ignoring temperature, etc. — you can write these equations in a bunch of different ways. The ones Stam uses are simplified for **real-time visual simulation**: he’s not trying to simulate airplane aerodynamics, just something that _looks_ like smoke or water moving naturally.
@@ -65,7 +57,7 @@ For now, I’m not worrying about all the physics behind them — like where exa
 
 ## Solver Basic Structure
 
-The discrete representation is a 2D grid where each cell stores quantities like velocity and density. Values are assumed to be constant within each cell and represented at the center (later Bridson explains methods where storing at the center is not such a good idea TODO confirm/write note).
+The discrete representation is a 2D grid where each cell stores quantities like velocity and density. Values are assumed to be constant within each cell and represented at the center (later Bridson explains methods where not storing at the center is a much better idea).
 
 > Bridson calls this Eulerian Viewpoint TODO continue
 
